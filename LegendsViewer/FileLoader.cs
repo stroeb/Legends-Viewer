@@ -234,29 +234,43 @@ namespace LegendsViewer
             Load();
         }
 
-        private void LocateOtherFiles(string xmlFile)
+        public void LocateOtherFiles(string xmlFile)
         {
-            string region = "";
-            if (xmlFile.LastIndexOf("-") > 0)
-                region = xmlFile.Substring(xmlFile.LastIndexOf("\\") + 1, xmlFile.LastIndexOf("-") - xmlFile.LastIndexOf("\\") - 1);
-            else
-                return;
-            string directory = xmlFile.Substring(0, xmlFile.LastIndexOf("\\") + 1);
-
-            if (File.Exists(directory + region + "-world_history.txt"))
+            var fileInfo = new FileInfo(xmlFile);
+            var region = "";
+            if (fileInfo.Name.Contains("-"))
             {
-                HistoryText.Text = directory + region + "-world_history.txt";
+                region = fileInfo.Name.Substring(0, fileInfo.Name.LastIndexOf("-", StringComparison.Ordinal));
+            }
+            else
+            {
+                return;
+            }
+
+            string directory = fileInfo.DirectoryName;
+
+            var historyFilename = Path.Combine(directory, region + "-world_history.txt");
+            if (File.Exists(historyFilename))
+            {
+                HistoryText.Text = historyFilename;
                 HistoryState = FileState.Ready;
             }
             else
-                HistoryState = FileState.NotReady;
-            if (File.Exists(directory + region + "-world_sites_and_pops.txt"))
             {
-                SitesText.Text = directory + region + "-world_sites_and_pops.txt";
+                HistoryState = FileState.NotReady;
+            }
+
+            var sitesFilename = Path.Combine(directory, region + "-world_sites_and_pops.txt");
+            if (File.Exists(sitesFilename))
+            {
+                SitesText.Text = sitesFilename;
                 SitesState = FileState.Ready;
             }
             else
+            {
                 SitesState = FileState.NotReady;
+            }
+
             List<string> imageFiles = Directory.GetFiles(directory).Where(file => file.Contains("world") && file.Contains(region) && (file.EndsWith(".bmp") || file.EndsWith(".png") || file.EndsWith(".jpg") || file.EndsWith(".jpeg"))).ToList();
             if (imageFiles.Count == 1)
             {
@@ -264,7 +278,9 @@ namespace LegendsViewer
                 MapState = FileState.Ready;
             }
             else
+            {
                 MapState = FileState.NotReady;
+            }
 
         }
 
