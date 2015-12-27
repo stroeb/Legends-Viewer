@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace LegendsViewer.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class FileLoaderTests
     {
         private FileLoader sut;
@@ -14,7 +14,7 @@ namespace LegendsViewer.Tests
         private TextBox SitesText;
         private TextBox MapText;
 
-        [TestInitialize]
+		[SetUp]
         public void Setup()
         {
             var DummyButton = new Button();
@@ -28,7 +28,7 @@ namespace LegendsViewer.Tests
                 DummyButton, MapText, null, null);
         }
 
-        [TestMethod]
+        [Test]
         public void FindsOtherFilesWhenLoadingXml()
         {
             var tempFolder = Path.GetTempPath();
